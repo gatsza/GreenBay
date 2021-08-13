@@ -1,0 +1,52 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id("org.flywaydb.flyway") version "6.5.0"
+    id 'java'
+}
+
+apply plugin: 'checkstyle'
+
+group = 'org.gfa'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+checkstyle {
+    toolVersion = "8.18"
+}
+
+flyway {
+    url = System.getenv('DATASOURCE_URL')
+    user = System.getenv('DATASOURCE_USERNAME')
+    password = System.getenv('DATASOURCE_PASSWORD')
+}
+
+dependencies {
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    runtimeOnly 'mysql:mysql-connector-java'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly'com.h2database:h2'
+}
+
+test {
+    useJUnitPlatform()
+}
