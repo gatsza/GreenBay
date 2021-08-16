@@ -1,11 +1,12 @@
 package org.gfa.greenbay.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gfa.greenbay.dtos.LoginRequestDTO;
 import org.gfa.greenbay.dtos.LoginResponseDTO;
-import org.gfa.greenbay.exceptions.LoginInformationMissingException;
 import org.gfa.greenbay.exceptions.LoginInformationWrongException;
-import org.gfa.greenbay.exceptions.PasswordMissingException;
-import org.gfa.greenbay.exceptions.UsernameMissingException;
+import org.gfa.greenbay.exceptions.LoginPayloadMissingException;
+import org.gfa.greenbay.exceptions.MultipleLoginFieldMissingException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class LoginServiceImpl implements LoginService {
 
   private final AuthenticationManager authenticationManager;
-  private UserService userService;
+  private final UserService userService;
 
   public LoginServiceImpl(UserService userService,
       AuthenticationManager authenticationManager) {
@@ -46,31 +47,22 @@ public class LoginServiceImpl implements LoginService {
 
   private void validateLoginRequest(LoginRequestDTO loginRequest) {
     if (loginRequest == null) {
-      throw new LoginInformationMissingException();
+      throw new LoginPayloadMissingException();
     }
 
-    boolean notHasUsername = isUsernameMissing(loginRequest);
-    boolean notHasPassword = isPasswordMissing(loginRequest);
+    List<String> missingFields = new ArrayList<>();
 
-    if (notHasUsername && notHasPassword) {
-      throw new LoginInformationMissingException();
+    if (loginRequest.getUsername() == null) {
+      missingFields.add("username");
     }
 
-    if (notHasUsername) {
-      throw new UsernameMissingException();
+    if (loginRequest.getPassword() == null) {
+      missingFields.add("password");
     }
 
-    if (notHasPassword) {
-      throw new PasswordMissingException();
+    if (missingFields.size() != 0) {
+      throw new MultipleLoginFieldMissingException(missingFields);
     }
-  }
-
-  private boolean isUsernameMissing(LoginRequestDTO loginRequest) {
-    return loginRequest.getUsername() == null;
-  }
-
-  private boolean isPasswordMissing(LoginRequestDTO loginRequest) {
-    return loginRequest.getPassword() == null;
   }
 
 }

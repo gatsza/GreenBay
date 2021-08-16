@@ -60,7 +60,8 @@ public class LoginIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON)
         .characterEncoding("utf-8"))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("error", is("Login information is required: username!")));
+        .andExpect(jsonPath("error",
+            is("Cannot login, additional information is required: [username]")));
   }
 
   @Test
@@ -75,7 +76,8 @@ public class LoginIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON)
         .characterEncoding("utf-8"))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("error", is("Login information is required: password!")));
+        .andExpect(jsonPath("error",
+            is("Cannot login, additional information is required: [password]")));
   }
 
   @Test
@@ -88,7 +90,8 @@ public class LoginIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON)
         .characterEncoding("utf-8"))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("error", is("Login information is required: username and password!")));
+        .andExpect(jsonPath("error",
+            is("Cannot login, additional information is required: [username, password]")));
   }
 
   @Test
@@ -96,13 +99,14 @@ public class LoginIntegrationTest {
     mockMvc.perform(post("/login")
         .characterEncoding("utf-8"))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("error", is("Login information is required: username and password!")));
+        .andExpect(jsonPath("error",
+            is("Cannot login, additional information is required: [username, password")));
   }
 
   @Test
   public void errorLoginTest_wrongUserData() throws Exception {
     LoginRequestDTO testRequest =
-        new LoginRequestDTO("WrongUser","WrongPassword");
+        new LoginRequestDTO("WrongUser", "WrongPassword");
 
     mockMvc.perform(post("/login")
         .content(objectMapper.writeValueAsString(testRequest))

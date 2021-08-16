@@ -27,23 +27,24 @@ public class UserDetailsServiceTest {
   UserDetailsServiceImpl userDetailsService;
 
   @Test
-  public void loadUserByUsernameTest_UsernameNotFoundExceptionThrown_repositoryReturnEmpty(){
+  public void loadUserByUsernameTest_UsernameNotFoundExceptionThrown_repositoryReturnEmpty() {
     String testUsername = "username";
 
     when(userRepository.findUserByUsername(testUsername)).thenReturn(Optional.empty());
 
-    assertThrows(UsernameNotFoundException.class,()->userDetailsService.loadUserByUsername(testUsername));
+    assertThrows(UsernameNotFoundException.class,
+        () -> userDetailsService.loadUserByUsername(testUsername));
   }
 
   @Test
-  public void loadUserByUsernameTest_returnUserDetails_repositoryReturnTestUser(){
+  public void loadUserByUsernameTest_returnUserDetails_repositoryReturnTestUser() {
     String testUsername = "username";
-    User testUser = new User(1L, testUsername, "password","ROLE_USER");
+    User testUser = new User(1L, testUsername, "password", "ROLE_USER");
     UserDetails testUserDetails = new UserDetailsImpl(testUser);
 
     when(userRepository.findUserByUsername(testUsername)).thenReturn(Optional.of(testUser));
 
-    assertEquals(testUserDetails , userDetailsService.loadUserByUsername(testUsername));
+    assertEquals(testUserDetails, userDetailsService.loadUserByUsername(testUsername));
   }
 
 }

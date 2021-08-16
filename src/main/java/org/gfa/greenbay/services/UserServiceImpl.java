@@ -1,5 +1,6 @@
 package org.gfa.greenbay.services;
 
+import java.util.Optional;
 import org.gfa.greenbay.models.User;
 import org.gfa.greenbay.repositories.UserRepository;
 import org.gfa.greenbay.security.JwtUtilService;
@@ -22,8 +23,18 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public String generateToken(String username) {
-    User loginUser = userRepository.findUserByUsername(username).get();
+    User loginUser = findUserByUsername(username)
+        .orElseThrow(() -> new IllegalStateException("User does not exist"));
     return jwtUtilService.generateToken(loginUser);
+  }
+
+  @Override
+  public Optional<User> getUserbyUsername(String username) {
+    return findUserByUsername(username);
+  }
+
+  private Optional<User> findUserByUsername(String username) {
+    return userRepository.findUserByUsername(username);
   }
 
 

@@ -9,5 +9,4 @@ public class GreenBayApplication {
   public static void main(String[] args) {
     SpringApplication.run(GreenBayApplication.class, args);
   }
-
 }

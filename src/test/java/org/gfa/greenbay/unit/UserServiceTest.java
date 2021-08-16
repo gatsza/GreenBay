@@ -17,17 +17,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
+  @InjectMocks
+  UserServiceImpl userService;
   @Mock
   private JwtUtilService jwtUtilService;
-
   @Mock
   private UserRepository userRepository;
 
-  @InjectMocks
-  UserServiceImpl userService;
-
   @Test
-  public void generateTokenTest_returnToken_rightValue(){
+  public void generateTokenTest_returnToken_rightValue() {
     String testUsername = "username";
     User testUser = new User();
     Optional<User> testUserOptional = Optional.of(new User());
@@ -36,7 +34,7 @@ public class UserServiceTest {
     when(userRepository.findUserByUsername(testUsername)).thenReturn(testUserOptional);
     when(jwtUtilService.generateToken(testUser)).thenReturn(testToken);
 
-    assertEquals("token",userService.generateToken("username"));
+    assertEquals("token", userService.generateToken("username"));
   }
 
 }
